@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://www.ros.org/wiki/xacro" >
+
+    <xacro:property name="quick_changer_only" value="false"/>
+
+    <xacro:macro name="Quick_Changer" params="name
+        changer_prefix
+        parent">
+
+        <xacro:property name="x" value="0.4"/>
+        <xacro:property name="y" value="0"/>
+        <xacro:property name="z" value="0"/>
+        <xacro:property name="mass" value="0.41"/>
+
+        <joint name="${parent}_${changer_prefix}_joint" type="fixed">
+            <parent link="${parent}"/>
+            <child link="${changer_prefix}_link"/>
+            <origin xyz="0 0 0" rpy="0 ${-pi/2} 0"/>
+        </joint>
+
+        <!-- Quick changer Link -->
+        <link name="${changer_prefix}_link">
+            <!-- Visual representation -->
+            <visual>
+                <origin xyz="0.04 0 0" rpy="0 0 ${pi/2}"/> <!-- Adjust gripper position -->
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/attachments/visual/Dual_Quick_Changer_Vis.stl" scale="0.001 0.001 0.001"/>
+                </geometry>
+                <material name="gray">
+                    <color rgba="1 1 1 1.0"/>
+                </material>
+            </visual>
+            <!-- Collision representation -->
+            <collision>
+                <origin xyz="0.04 0 0" rpy="0 0 ${pi/2}"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/attachments/collision/Dual_Quick_Changer_Col.STL" scale="0.001 0.001 0.001"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="${x} ${y} ${z}" rpy="0 0 ${pi/2}"/>
+                <mass value="${mass}" />
+                <inertia ixx="${(1/12) * mass * (y*y+z*z)}" ixy="0.0" ixz="0.0"
+                        iyy="${(1/12) * mass * (x*x+z*z)}" iyz="0.0"
+                        izz="${(1/12) * mass * (x*x+y*y)}" />
+            </inertial>
+        </link>
+        
+
+   </xacro:macro>
+
+   <xacro:if value="${quick_changer_only}">
+        <link name="world"/>
+        <xacro:Quick_Changer name="quick_changer" changer_prefix="quick_changer" parent="world"/>
+   </xacro:if>
+   <xacro:unless value="${quick_changer_only}">
+        <xacro:Quick_Changer name="quick_changer" changer_prefix="quick_changer" parent="ur5e_tool0"/>
+   </xacro:unless>
+   <!-- Check if the controllers doesnt work then remove the tool0 and add the QC to flange -->
+
+</robot>

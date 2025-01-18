@@ -460,5 +460,17 @@
       <child link="${tf_prefix}tool0"/>
     </joint>
 
+    <xacro:include filename="$(find rg2_description)/urdf/quick_changer.xacro"/>
+
+    <xacro:include filename="$(find rg2_description)/urdf/rg2_gripper.urdf.xacro"/>
+
+    <xacro:rg2_gripper name="Rg2GripperHardwareInterface1" prefix="gripper1" parent="quick_changer_link" sim_gazebo="true" use_fake_hardware="$(arg use_fake_hardware)">
+      <origin xyz="0.050 0.03200 0.000" rpy="${pi/2} 0 ${pi/3}"/>
+    </xacro:rg2_gripper>
+    <xacro:rg2_gripper name="Rg2GripperHardwareInterface2" prefix="gripper2" parent="quick_changer_link" sim_gazebo="true" use_fake_hardware="$(arg use_fake_hardware)">
+        <origin xyz="0.050 -0.03200 0.000" rpy="${-pi/2} 0 ${-pi/3}"/>
+    </xacro:rg2_gripper>
+
+
   </xacro:macro>
 </robot>

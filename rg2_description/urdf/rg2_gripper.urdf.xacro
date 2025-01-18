@@ -1,0 +1,365 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="rg2_gripper">
+
+
+    <!-- Materials-->
+    <material name="white">
+        <color rgba="1 1 1 1" />
+    </material>
+
+    <material name="orange">
+        <color rgba="1 0.3 0.1 1"/>
+    </material>
+
+    <material name="blue">
+        <color rgba="0 ${153/255} ${204/255} 1"/>
+    </material>
+
+    <material name="gray">
+        <color rgba="0.5 0.5 0.5 1"/>
+    </material>
+
+    <material name="red">
+        <color rgba="1 0 0 1"/>
+    </material>
+    
+
+    <!-- parameters -->
+    <!-- <xacro:arg name="use_fake_hardware" default="true" /> -->
+    
+    <!-- If visualizing just the gripper with no arm, set the true, otherwise, set to false -->
+    <!-- <xacro:property name="gripper_only" value="false"/> -->
+
+    <xacro:macro name="rg2_gripper" params="
+        name
+        prefix
+        parent
+        *origin
+        sim_gazebo:=false
+        sim_isaac:=false
+        use_fake_hardware:=false
+        fake_sensor_commands:=false
+        include_ros2_control:=true
+        com_port:=/dev/ttyUSB0">
+        
+        <!-- ros2 control include-->
+
+        <xacro:include filename="$(find rg2_description)/urdf/rg2_gripper.ros2_control.xacro"/>
+
+        <!-- if we are simulating or directly communicating with the gripper we need a ros2 control instance -->
+
+        <xacro:if value="${include_ros2_control}">
+            <xacro:rg2_gripper_ros2_control
+                name="${name}" prefix="${prefix}"
+                sim_gazebo="${sim_gazebo}"
+                sim_isaac="${sim_isaac}"
+                use_fake_hardware="${use_fake_hardware}"
+                fake_sensor_commands="${fake_sensor_commands}"
+                com_port="${com_port}"/>
+        </xacro:if>
+
+        
+
+        <link name="${prefix}_hand_link">
+            <visual>
+                <origin xyz="0.069537 ${-0.068+0.043752} 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/visual/RG2_Hand_vis.STL"  scale="0.001 0.001 0.001"/>
+                </geometry>
+                <material name="white"/>
+            </visual>
+            <collision>
+                <origin xyz="0 0 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/collision/RG2_Hand_col.STL"/>
+                </geometry>
+            </collision>
+            <inertial>
+                <origin xyz="0.061902 0.000129 -0.000005" rpy="0.00 0.00 0.00"/>
+                <mass value="1.684558"/>
+                <inertia ixx="0.000862" ixy="0.000000" ixz="0.000000"
+                        iyy="0.002401" iyz="-0.000001"
+                        izz="0.002620" />
+            </inertial>
+        </link>   
+
+        <link name="${prefix}_l_moment_arm_link">
+            <collision>
+                <origin xyz="0.00 0.00 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/collision/RG2_LeftMomentArm_col.STL"/>
+                </geometry>
+            </collision>
+            <visual>
+                <origin xyz="0.00 0.00 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/visual/RG2_LeftMomentArm_vis.STL"/>
+                </geometry>
+                <material name="white"/>
+            </visual>
+            <inertial>
+                <origin xyz="0.017004 0.006397 -0.010300" rpy="0.00 0.00 0.00"/>
+                <mass value="0.160209"/>
+                <inertia ixx="0.000023" ixy="0.000019" ixz="0.000000"
+                        iyy="0.000072" iyz="0.000000"
+                        izz="0.000083" />
+            </inertial>
+        </link>
+
+        <link name="${prefix}_l_finger_link">
+            <collision>
+                <origin xyz="0.00 0.00 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/collision/RG2_LeftFinger_col.STL"/>
+                </geometry>
+                <surface>
+                    <friction>
+                    <ode>
+                        <mu1>100000.0</mu1>
+                        <mu2>100000.0</mu2>
+                    </ode>
+                    </friction>
+                    <contact>
+                    <ode>
+                        <kp>1e+5</kp>
+                        <kd>1</kd>
+                        <soft_cfm>0</soft_cfm>
+                        <soft_erp>0.2</soft_erp>
+                        <minDepth>0.002</minDepth>
+                        <maxVel>0</maxVel>
+                    </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <visual>
+                <origin xyz="0.00 0.00 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/visual/RG2_LeftFinger_vis.STL"/>
+                </geometry>
+                <material name="gray"/>
+            </visual>
+            <inertial>
+                <origin xyz="0.024695 -0.010178 -0.010001" rpy="0.00 0.00 0.00"/>
+                <mass value="0.081638"/>
+                <inertia ixx="0.000006" ixy="-0.000005" ixz="0.000000"
+                        iyy="0.000025" iyz="0.000000"
+                        izz="0.000026" />
+            </inertial>
+        </link>
+
+        <link name="${prefix}_l_truss_arm_link">
+            <collision>
+                <origin xyz="0.00 0.00 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/collision/RG2_LeftTrussArm_col.STL"/>
+                </geometry>
+            </collision>
+            <visual>
+                <origin xyz="0.00 0.00 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/visual/RG2_LeftTrussArm_vis.STL"/>
+                </geometry>
+                <material name="blue"/>
+            </visual>
+            <inertial>
+                <origin xyz="0.023075 0.012136 -0.010000" rpy="0.00 0.00 0.00"/>
+                <mass value="0.065927"/>
+                <inertia ixx="0.000010" ixy="0.000010" ixz="0.000000"
+                        iyy="0.000024" iyz="0.000000"
+                        izz="0.000025" />
+            </inertial>
+        </link>
+
+        <link name="${prefix}_r_moment_arm_link">
+            <collision>
+                <origin xyz="0.00 0.00 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/collision/RG2_RightMomentArm_col.STL"/>
+                </geometry>
+            </collision>
+            <visual>
+                <origin xyz="0.00 0.00 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/visual/RG2_RightMomentArm_vis.STL"/>
+                </geometry>
+                <material name="white"/>
+            </visual>
+            <inertial>
+                <origin xyz="0.017004 -0.006397 -0.010300" rpy="0.00 0.00 0.00"/>
+                <mass value="0.160209"/>
+                <inertia ixx="0.000023" ixy="-0.000019" ixz="0.000000"
+                        iyy="0.000072" iyz="0.000000"
+                        izz="0.000083" />
+            </inertial>
+        </link>
+
+        <link name="${prefix}_r_finger_link">
+            <collision>
+                <origin xyz="0.00 0.00 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/collision/RG2_RightFinger_col.STL"/>
+                </geometry>
+                <surface>
+                    <friction>
+                    <ode>
+                        <mu1>100000.0</mu1>
+                        <mu2>100000.0</mu2>
+                    </ode>
+                    </friction>
+                    <contact>
+                    <ode>
+                        <kp>1e+5</kp>
+                        <kd>1</kd>
+                        <soft_cfm>0</soft_cfm>
+                        <soft_erp>0.2</soft_erp>
+                        <minDepth>0.002</minDepth>
+                        <maxVel>0</maxVel>
+                    </ode>
+                    </contact>
+                </surface>
+            </collision>
+            <visual>
+                <origin xyz="0.00 0.00 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/visual/RG2_RightFinger_vis.STL"/>
+                </geometry>
+                <material name="gray"/>
+            </visual>
+            <inertial>
+                <origin xyz="0.024695 0.010178 -0.010000" rpy="0.00 0.00 0.00"/>
+                <mass value="0.081637"/>
+                <inertia ixx="0.000006" ixy="0.000005" ixz="0.000000"
+                        iyy="0.000025" iyz="0.000000"
+                        izz="0.000026" />
+            </inertial>
+        </link>
+
+        <link name="${prefix}_r_truss_arm_link">
+            <collision>
+                <origin xyz="0.00 0.00 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/collision/RG2_RightTrussArm_col.STL"/>
+                </geometry>
+            </collision>
+            <visual>
+                <origin xyz="0.00 0.00 0.00" rpy="0.00 0.00 0.00"/>
+                <geometry>
+                    <mesh filename="file://$(find rg2_description)/meshes/rg2_gripper/visual/RG2_RightTrussArm_vis.STL"/>
+                </geometry>
+                <material name="blue"/>
+            </visual>
+            <inertial>
+                <origin xyz="0.023075 -0.012136 -0.010000" rpy="0.00 0.00 0.00"/>
+                <mass value="0.065927"/>
+                <inertia ixx="0.000010" ixy="-0.000010" ixz="0.000000"
+                        iyy="0.000024" iyz="0.000000"
+                        izz="0.000025" />
+            </inertial>
+        </link>  
+
+        <link name="${prefix}_tool_link"/>
+
+        <joint name="${parent}_${prefix}_joint" type="fixed">
+            <parent link="${parent}"/>
+            <child link="${prefix}_hand_link"/>
+            <xacro:insert_block name="origin"/>
+        </joint>
+
+        <joint name="${prefix}_joint" type="revolute">
+            <parent link="${prefix}_hand_link"/>
+            <child link="${prefix}_l_moment_arm_link"/>
+            <origin xyz="0.125 0.017 0.010" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit velocity="3.14" effort="10.6" lower="${-0.45}" upper="${pi*0.5}" />
+            <!-- <limit velocity="3.14" effort="100" lower="-3" upper="3" /> -->
+            <dynamics damping="0.1" friction="0.0" />
+            <implicitSpringDamper>True</implicitSpringDamper>
+        </joint>
+
+        <joint name="${prefix}_l_finger_2_joint" type="revolute">
+            <parent link="${prefix}_l_moment_arm_link"/>
+            <child link="${prefix}_l_finger_link"/>
+            <origin xyz="0.049 0.026 0.000" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit velocity="3.14" effort="10.6" lower="${-pi*0.5}" upper="${pi*0.5}" />
+            <!-- <limit velocity="3.14" effort="100" lower="-3" upper="3" /> -->
+            <mimic joint="${prefix}_joint" multiplier="-1"/>
+            <dynamics damping="0.1" friction="0.0" />
+            <implicitSpringDamper>True</implicitSpringDamper>
+        </joint>
+        
+        <joint name="${prefix}_l_finger_passive_joint" type="revolute">
+            <parent link="${prefix}_hand_link"/>
+            <child link="${prefix}_l_truss_arm_link"/>
+            <origin xyz="0.14171 0.00796 0.010" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit velocity="3.14" effort="10.6" lower="${-pi*0.5}" upper="${pi*0.5}" />
+            <!-- <limit velocity="3.14" effort="100" lower="-3" upper="3" /> -->
+            <mimic joint="${prefix}_joint" multiplier="1"/>
+            <dynamics damping="0.1" friction="0.0" />
+            <implicitSpringDamper>True</implicitSpringDamper>
+        </joint>
+
+        <joint name="${prefix}_r_finger_1_joint" type="revolute">
+            <parent link="${prefix}_hand_link"/>
+            <child link="${prefix}_r_moment_arm_link"/>
+            <origin xyz="0.125 -0.0155 0.010" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit velocity="3.14" effort="10.6" lower="${-pi*0.5}" upper="${pi*0.5}" />
+            <!-- <limit velocity="3.14" effort="100" lower="-3" upper="3" /> -->
+            <mimic joint="${prefix}_joint" multiplier="-1"/>
+            <dynamics damping="0.1" friction="0.0" />
+            <implicitSpringDamper>True</implicitSpringDamper>
+        </joint>
+
+        <joint name="${prefix}_r_finger_2_joint" type="revolute">
+            <parent link="${prefix}_r_moment_arm_link"/>
+            <child link="${prefix}_r_finger_link"/>
+            <origin xyz="0.049 -0.026 0.000" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit velocity="3.14" effort="10.6" lower="${-pi*0.5}" upper="${pi*0.5}" />
+            <!-- <limit velocity="3.14" effort="100" lower="-3" upper="3" /> -->
+            <mimic joint="${prefix}_joint" multiplier="1"/>
+            <dynamics damping="0.1" friction="0.0" />
+            <implicitSpringDamper>True</implicitSpringDamper>
+        </joint>
+
+        <joint name="${prefix}_r_finger_passive_joint" type="revolute">
+            <parent link="${prefix}_hand_link"/>
+            <child link="${prefix}_r_truss_arm_link"/>
+            <origin xyz="0.14171 -0.0064 0.010" rpy="0 0 0"/>
+            <axis xyz="0 0 1"/>
+            <limit velocity="3.14" effort="10.6" lower="${-pi*0.5}" upper="${pi*0.5}" />
+            <!-- <limit velocity="3.14" effort="100" lower="-3" upper="3" /> -->
+            <mimic joint="${prefix}_joint" multiplier="-1"/>
+            <dynamics damping="0.1" friction="0.0" />
+            <implicitSpringDamper>True</implicitSpringDamper>
+        </joint>
+
+        <joint name="${prefix}-tool_joint" type="fixed">
+            <!--default toolframe - X+ left, Y+ up, Z+ front-->
+            <origin xyz="0.2 0 0" rpy="${pi/2} 0 ${pi/2}"/>
+            <parent link="${prefix}_hand_link"/>
+            <child link="${prefix}_tool_link"/>
+        </joint>      
+
+    </xacro:macro>
+
+
+    <!-- <xacro:if value="${gripper_only}">
+    	<link name="world"></link>
+    	<xacro:rg2_gripper name="Rg2GripperHardwareInterface" prefix="gripper" parent="world" sim_gazebo="false" use_fake_hardware="$(arg use_fake_hardware)">
+        	<origin xyz="0 0 0" rpy="0 0 0" />
+    	</xacro:rg2_gripper>
+    </xacro:if>
+
+    <xacro:if value="${not gripper_only}">
+    	<xacro:rg2_gripper name="Rg2GripperHardwareInterface1" prefix="gripper1" parent="quick_changer_link" sim_gazebo="true" use_fake_hardware="$(arg use_fake_hardware)">
+        	<origin xyz="0.050 0.03200 0.000" rpy="${pi/2} 0 ${pi/3}"/>
+    	</xacro:rg2_gripper>
+        <xacro:rg2_gripper name="Rg2GripperHardwareInterface2" prefix="gripper2" parent="quick_changer_link" sim_gazebo="true" use_fake_hardware="$(arg use_fake_hardware) ">
+            <origin xyz="0.050 -0.03200 0.000" rpy="${-pi/2} 0 ${-pi/3}"/>
+    	</xacro:rg2_gripper>
+    </xacro:if> -->
+
+</robot>

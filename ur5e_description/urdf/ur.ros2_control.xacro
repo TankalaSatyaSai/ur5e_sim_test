@@ -129,6 +129,7 @@
         <!-- <state_interface name="effort"/> -->
       </joint>
 
+
       <!-- <xacro:unless value="${sim_gazebo or sim_ignition}">
         <sensor name="${tf_prefix}tcp_fts_sensor">
           <state_interface name="force.x"/>

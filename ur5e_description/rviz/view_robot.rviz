@@ -62,7 +62,90 @@ Visualization Manager:
         Expand Link Details: false
         Expand Tree: false
         Link Tree Style: Links in Alphabetic Order
+        gripper1_hand_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper1_l_finger_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper1_l_moment_arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper1_l_truss_arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper1_r_finger_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper1_r_moment_arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper1_r_truss_arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper1_tool_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+        gripper2_hand_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper2_l_finger_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper2_l_moment_arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper2_l_truss_arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper2_r_finger_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper2_r_moment_arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper2_r_truss_arm_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        gripper2_tool_link:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
         ground_plane:
+          Alpha: 1
+          Show Axes: false
+          Show Trail: false
+          Value: true
+        quick_changer_link:
           Alpha: 1
           Show Axes: false
           Show Trail: false
@@ -141,7 +224,41 @@ Visualization Manager:
       Frame Timeout: 15
       Frames:
         All Enabled: true
+        gripper1_hand_link:
+          Value: true
+        gripper1_l_finger_link:
+          Value: true
+        gripper1_l_moment_arm_link:
+          Value: true
+        gripper1_l_truss_arm_link:
+          Value: true
+        gripper1_r_finger_link:
+          Value: true
+        gripper1_r_moment_arm_link:
+          Value: true
+        gripper1_r_truss_arm_link:
+          Value: true
+        gripper1_tool_link:
+          Value: true
+        gripper2_hand_link:
+          Value: true
+        gripper2_l_finger_link:
+          Value: true
+        gripper2_l_moment_arm_link:
+          Value: true
+        gripper2_l_truss_arm_link:
+          Value: true
+        gripper2_r_finger_link:
+          Value: true
+        gripper2_r_moment_arm_link:
+          Value: true
+        gripper2_r_truss_arm_link:
+          Value: true
+        gripper2_tool_link:
+          Value: true
         ground_plane:
+          Value: true
+        quick_changer_link:
           Value: true
         ur5e_base:
           Value: true
@@ -169,7 +286,7 @@ Visualization Manager:
           Value: true
         world:
           Value: true
-      Marker Scale: 0.4000000059604645
+      Marker Scale: 0.15000000596046448
       Name: TF
       Show Arrows: true
       Show Axes: true
@@ -190,7 +307,33 @@ Visualization Manager:
                         ur5e_wrist_3_link:
                           ur5e_flange:
                             ur5e_tool0:
-                              {}
+                              quick_changer_link:
+                                gripper1_hand_link:
+                                  gripper1_l_moment_arm_link:
+                                    gripper1_l_finger_link:
+                                      {}
+                                  gripper1_l_truss_arm_link:
+                                    {}
+                                  gripper1_r_moment_arm_link:
+                                    gripper1_r_finger_link:
+                                      {}
+                                  gripper1_r_truss_arm_link:
+                                    {}
+                                  gripper1_tool_link:
+                                    {}
+                                gripper2_hand_link:
+                                  gripper2_l_moment_arm_link:
+                                    gripper2_l_finger_link:
+                                      {}
+                                  gripper2_l_truss_arm_link:
+                                    {}
+                                  gripper2_r_moment_arm_link:
+                                    gripper2_r_finger_link:
+                                      {}
+                                  gripper2_r_truss_arm_link:
+                                    {}
+                                  gripper2_tool_link:
+                                    {}
                           ur5e_ft_frame:
                             {}
       Update Interval: 0
@@ -256,10 +399,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.009999999776482582
-      Pitch: 0.46539807319641113
+      Pitch: 0.44539809226989746
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 6.0235819816589355
+      Yaw: 1.020401954650879
     Saved: ~
 Window Geometry:
   Displays:
