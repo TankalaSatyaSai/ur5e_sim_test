@@ -37,10 +37,15 @@ def generate_launch_description():
         output='screen')
  
     # Start gripper action controller
-    # start_gripper_action_controller_cmd = ExecuteProcess(
-    #     cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
-    #          'gripper_action_controller'],
-    #     output='screen')
+    start_gripper1_action_controller_cmd = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+             'gripper1_action_controller'],
+        output='screen')
+    
+    start_gripper2_action_controller_cmd = ExecuteProcess(
+        cmd=['ros2', 'control', 'load_controller', '--set-state', 'active',
+             'gripper2_action_controller'],
+        output='screen')
  
     # Launch joint state broadcaster
     start_joint_state_broadcaster_cmd = ExecuteProcess(
@@ -56,10 +61,15 @@ def generate_launch_description():
             on_exit=[start_arm_controller_cmd]))
  
     # Launch the arm controller after launching the joint state broadcaster
-    # load_arm_controller_cmd = RegisterEventHandler(
-    #     event_handler=OnProcessExit(
-    #         target_action=start_arm_controller_cmd,
-    #         on_exit=[start_gripper_action_controller_cmd]))
+    load_arm_controller_cmd = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=start_arm_controller_cmd,
+            on_exit=[start_gripper1_action_controller_cmd]))
+    
+    load_gripper_controller_cmd = RegisterEventHandler(
+        event_handler=OnProcessExit(
+            target_action=start_gripper1_action_controller_cmd,
+            on_exit=[start_gripper2_action_controller_cmd]))
  
     # Create the launch description and populate
     ld = LaunchDescription()
@@ -67,6 +77,7 @@ def generate_launch_description():
     # Add the actions to the launch description in sequence
     ld.add_action(start_joint_state_broadcaster_cmd)
     ld.add_action(load_joint_state_broadcaster_cmd)
-    # ld.add_action(load_arm_controller_cmd)
+    ld.add_action(load_arm_controller_cmd)
+    ld.add_action(load_gripper_controller_cmd)
  
     return ld

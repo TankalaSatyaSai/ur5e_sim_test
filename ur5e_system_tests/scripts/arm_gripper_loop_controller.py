@@ -55,16 +55,23 @@ class ArmGripperLoopController(Node):
         )
  
         # Set up gripper action client for gripper control
-        # self.gripper_client = ActionClient(
-        #     self,
-        #     GripperCommand,
-        #     '/gripper_action_controller/gripper_cmd'
-        # )
+        self.gripper1_client = ActionClient(
+            self,
+            GripperCommand,
+            '/gripper1_action_controller/gripper_cmd'
+        )
+        
+        self.gripper2_client = ActionClient(
+            self,
+            GripperCommand,
+            '/gripper2_action_controller/gripper_cmd'
+        )
  
         # Wait for both action servers to be available
         self.get_logger().info('Waiting for action servers...')
         self.arm_client.wait_for_server()
-        # self.gripper_client.wait_for_server()
+        self.gripper1_client.wait_for_server()
+        self.gripper2_client.wait_for_server()
         self.get_logger().info('Action servers connected!')
  
         # List of joint names for the robot arm
@@ -103,19 +110,33 @@ class ArmGripperLoopController(Node):
  
         self.arm_client.send_goal_async(goal_msg)
  
-    # def send_gripper_command(self, position: float) -> None:
-    #     """
-    #     Send a command to the gripper to open or close.
+    def send_gripper1_command(self, position: float) -> None:
+        """
+        Send a command to the gripper to open or close.
  
-    #     Args:
-    #         position (float): Position value for gripper (0.0 for open, -0.7 for closed)
-    #     """
-    #     # Create and send the gripper command
-    #     goal_msg = GripperCommand.Goal()
-    #     goal_msg.command.position = position
-    #     goal_msg.command.max_effort = 5.0
+        Args:
+            position (float): Position value for gripper (0.0 for open, -0.7 for closed)
+        """
+        # Create and send the gripper command
+        goal_msg = GripperCommand.Goal()
+        goal_msg.command.position = position
+        goal_msg.command.max_effort = 5.0
  
-    #     self.gripper_client.send_goal_async(goal_msg)
+        self.gripper1_client.send_goal_async(goal_msg)
+        
+    def send_gripper2_command(self, position: float) -> None:
+        """
+        Send a command to the gripper to open or close.
+ 
+        Args:
+            position (float): Position value for gripper (0.0 for open, -0.7 for closed)
+        """
+        # Create and send the gripper command
+        goal_msg = GripperCommand.Goal()
+        goal_msg.command.position = position
+        goal_msg.command.max_effort = 5.0
+ 
+        self.gripper2_client.send_goal_async(goal_msg)    
  
     def control_loop_callback(self) -> None:
         """
@@ -140,9 +161,13 @@ class ArmGripperLoopController(Node):
         time.sleep(1.0)  # Pause for 1 second at target
  
         # Close gripper
-        # self.get_logger().info('Closing gripper')
-        # self.send_gripper_command(-0.7)  # Close gripper
-        # time.sleep(0.5)  # Wait for gripper to close
+        self.get_logger().info('Closing gripper1')
+        self.send_gripper1_command(-0.3)  # Close gripper
+        time.sleep(0.5)  # Wait for gripper to close
+        
+        self.get_logger().info('Closing gripper2')
+        self.send_gripper2_command(-0.3)  # Close gripper
+        time.sleep(0.5)  # Wait for gripper to close
  
         # Move to home position
         self.get_logger().info('Moving to home position')
@@ -154,9 +179,13 @@ class ArmGripperLoopController(Node):
         time.sleep(1.0)  # Pause for 1 second at home
  
         # Open gripper
-        # self.get_logger().info('Opening gripper')
-        # self.send_gripper_command(0.0)  # Open gripper
-        # time.sleep(0.5)  # Wait for gripper to open
+        self.get_logger().info('Opening gripper1')
+        self.send_gripper1_command(0.2)  # Open gripper
+        time.sleep(0.5)  # Wait for gripper to open
+        
+        self.get_logger().info('Opening gripper2')
+        self.send_gripper2_command(0.2)  # Open gripper
+        time.sleep(0.5)  # Wait for gripper to open
  
         # Final pause before next cycle
         time.sleep(1.0)
