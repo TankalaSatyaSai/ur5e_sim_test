@@ -3,7 +3,7 @@
 controller_manager:
   ros__parameters:
     update_rate: 100 # update_rate specifies how often (in Hz) the controllers should be updated.
- 
+
     # The JointTrajectoryController allows you to send joint trajectory commands to a group
     # of joints on a robot. These commands specify the desired positions for each joint.
     arm_controller:
@@ -53,7 +53,7 @@ arm_controller:
  
     # Allow non-zero velocity at the end of the trajectory
     allow_nonzero_velocity_at_trajectory_end: true
- 
+
 gripper1_action_controller:
   ros__parameters:
     joint: gripper1_joint

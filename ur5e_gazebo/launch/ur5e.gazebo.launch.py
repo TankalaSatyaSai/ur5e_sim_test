@@ -206,6 +206,7 @@ def generate_launch_description():
         executable='parameter_bridge',
         parameters=[{
             'config_file': default_ros_gz_bridge_config_file_path,
+            # 'override_timestamps_with_wall_time': True
         }],
         output='screen'
     )
