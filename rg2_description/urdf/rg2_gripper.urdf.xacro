@@ -337,8 +337,8 @@
         </joint>
 
         <joint name="${prefix}-tool_joint" type="fixed">
-            <!--default toolframe - X+ left, Y+ up, Z+ front-->
-            <origin xyz="0.2 0 0" rpy="${pi/2} 0 ${pi/2}"/>
+            <!--default toolframe - X+ up, Y+ right, Z+ front-->
+            <origin xyz="0.2 0 0" rpy="${pi/2} ${pi/2} ${pi/2}"/>
             <parent link="${prefix}_hand_link"/>
             <child link="${prefix}_tool_link"/>
         </joint>      

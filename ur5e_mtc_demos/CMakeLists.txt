@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
-project(ur5e_moveit_demos)
+project(ur5e_mtc_demos)
 
 if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
   add_compile_options(-Wall -Wextra -Wpedantic)
@@ -7,37 +7,29 @@ endif()
 
 # find dependencies
 find_package(ament_cmake REQUIRED)
-find_package(moveit_msgs REQUIRED)
-find_package(moveit_ros_planning_interface REQUIRED)
-find_package(moveit_visual_tools REQUIRED)
+find_package(moveit_task_constructor_core REQUIRED)
 find_package(rclcpp REQUIRED)
+# uncomment the following section in order to fill in
+# further dependencies manually.
+# find_package(<dependency> REQUIRED)
 
-add_executable(hello_moveit src/hello_moveit.cpp)
-target_include_directories(hello_moveit PUBLIC
+add_executable(mtc_node src/mtc_node.cpp)
+target_include_directories(mtc_node PUBLIC
   $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
   $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
-target_compile_features(hello_moveit PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
+target_compile_features(mtc_node PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
 ament_target_dependencies(
-  hello_moveit
-  "moveit_ros_planning_interface"
+  mtc_node
+  "moveit_task_constructor_core"
   "rclcpp"
 )
 
-add_executable(plan_around_objects src/plan_around_objects.cpp)
-target_include_directories(plan_around_objects PUBLIC
-  $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
-  $<INSTALL_INTERFACE:include/${PROJECT_NAME}>)
-target_compile_features(plan_around_objects PUBLIC c_std_99 cxx_std_17)  # Require C99 and C++17
-ament_target_dependencies(
-  plan_around_objects
-  "moveit_msgs"
-  "moveit_ros_planning_interface"
-  "moveit_visual_tools"
-  "rclcpp"
-)
-
-install(TARGETS hello_moveit plan_around_objects
+install(TARGETS mtc_node
   DESTINATION lib/${PROJECT_NAME})
+
+install(DIRECTORY launch rviz
+  DESTINATION share/${PROJECT_NAME}
+)
 
 if(BUILD_TESTING)
   find_package(ament_lint_auto REQUIRED)
