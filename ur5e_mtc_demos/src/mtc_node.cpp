@@ -205,12 +205,13 @@ mtc::Task MTCTaskNode::createTask()
       stage->properties().set("marker_ns", "grasp_pose");
       stage->setPreGraspPose("open");
       stage->setObject("object");
-      stage->setAngleDelta(M_PI / 12);
+      stage->setAngleDelta(M_PI / 18);
       stage->setMonitoredStage(current_state_ptr);  // Hook into current state
       Eigen::Isometry3d grasp_frame_transform;
       Eigen::Quaterniond q = Eigen::AngleAxisd(M_PI / 2, Eigen::Vector3d::UnitX()) *
                             Eigen::AngleAxisd(M_PI / 2, Eigen::Vector3d::UnitY()) *
                             Eigen::AngleAxisd(M_PI / 2, Eigen::Vector3d::UnitZ());
+      // Eigen::Quaterniond q = Eigen::Quaterniond::Identity(); 
       grasp_frame_transform.linear() = q.matrix();
       grasp_frame_transform.translation().z() = 0.1;    
       // Compute IK
@@ -352,7 +353,7 @@ mtc::Task MTCTaskNode::createTask()
       // Set retreat direction
       geometry_msgs::msg::Vector3Stamped vec;
       vec.header.frame_id = "world";
-      vec.vector.x = -0.5;
+      vec.vector.y = -0.2;
       stage->setDirection(vec);
       place->insert(std::move(stage));
     }
@@ -363,9 +364,16 @@ mtc::Task MTCTaskNode::createTask()
   {
     auto stage = std::make_unique<mtc::stages::MoveTo>("return home", interpolation_planner);
     stage->properties().configureInitFrom(mtc::Stage::PARENT, { "group" });
-    stage->setGoal("ready");
+    stage->setGoal("home");
     task.add(std::move(stage));
-  }                          
+  } 
+  
+  {
+    auto stage = std::make_unique<mtc::stages::MoveTo>("close hand", interpolation_planner);
+    stage->setGroup(hand_group_name);
+    stage->setGoal("close");
+    task.add(std::move(stage));
+  }
 
   return task;
 }
